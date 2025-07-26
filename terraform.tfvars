@@ -1,0 +1,10 @@
+ecr_repo_name = ["node-appointment", "node-patient"]
+alb_sg_name = "uc8-alb-security-group"
+sg_name = "uc8-app-security-group"
+vpc_cidr = "10.0.0.0/16"
+vpc_name = "uc8-my-vpc"
+public_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnets = ["10.0.3.0/24", "10.0.4.0/24"]
+azs = ["us-east-1a", "us-east-1b"]
+cluster_name = "uc8-my-cluster"
+execution_role_arn = "arn:aws:iam::911891700576:role/ecsTaskExecutionRole"

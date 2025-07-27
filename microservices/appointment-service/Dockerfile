@@ -2,14 +2,16 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install dependencies
-RUN npm install
-
-# Copy the service code
 COPY appointment-service.js .
 
-# Expose the service port
+RUN node -v
+
+RUN npm -v
+
+RUN npm init
+
+RUN npm install express
+
 EXPOSE 3001
 
-# Start the service
 CMD ["node", "appointment-service.js"]

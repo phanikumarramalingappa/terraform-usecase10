@@ -24,6 +24,7 @@ resource "aws_lb_target_group" "patients" {
     timeout             = 10
     healthy_threshold   = 2
     unhealthy_threshold = 2
+    # matcher removed because it's invalid for TCP
   }
 }
 
@@ -41,6 +42,7 @@ resource "aws_lb_target_group" "appointments" {
     timeout             = 10
     healthy_threshold   = 2
     unhealthy_threshold = 2
+    # matcher removed because it's invalid for TCP
   }
 }
 

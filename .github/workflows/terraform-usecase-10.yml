@@ -1,11 +1,13 @@
-name: ECS Fargate ALB Terraform UC-8
+name: terraform-usecase-10
 
 on:
-  push:
-    paths:
-      - '**'
-      - '.github/workflows/terraform-usecase-10.yaml'
-    branches: [main]
+  workflow_dispatch:
+# on:
+#   push:
+#     paths:
+#       - '**'
+#       - '.github/workflows/terraform-usecase-10.yaml'
+#     branches: [main]
 
 permissions:
   id-token: write
@@ -189,6 +191,18 @@ jobs:
         if: ${{ steps.get_action.outputs.action == 'apply' }}
         run: terraform apply -auto-approve
 
+
+      - name: Build and Push appointment-service
+        if: steps.get_action.outputs.action == 'apply'
+        run: |
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-appointment:latest ./microservices/appointment-service
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-appointment:latest
+
+      - name: Build and Push patient-service
+        if: steps.get_action.outputs.action == 'apply'
+        run: |
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-patient:latest ./microservices/patient-service
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-patient:latest
       - name: Terraform Destroy
         if: ${{ steps.get_action.outputs.action == 'destroy' }}
         run: terraform destroy -auto-approve

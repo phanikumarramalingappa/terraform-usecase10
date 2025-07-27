@@ -66,5 +66,6 @@ module "api_gateway" {
   api_name = "my-api"
   user_pool_id = module.cognito.user_pool_id
   alb_dns_name = module.alb.alb_dns_name
+  internal_alb_arn  = module.alb.alb_arn
   user_pool_arn = module.cognito.user_pool_arn
 }

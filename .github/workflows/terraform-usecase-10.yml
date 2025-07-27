@@ -31,20 +31,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: ${{ secrets.OIDC_ROLE }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build and Push appointment-service
-        run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-appointment:latest ./microservices/appointment-service
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-appointment:latest
-
-      - name: Build and Push patient-service
-        run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-patient:latest ./microservices/patient-service
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-patient:latest
-
       - name: Setup Python for Checkov
         uses: actions/setup-python@v5.6.0
 
@@ -89,66 +75,6 @@ jobs:
           else
             echo "README.md was not generated."
 
-      - name: Update Pull Request
-        uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GIT_TOKEN }}
-          script: |
-            const output = `#### Terraform Format and Style \`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization \`${{ steps.init.outcome }}\`
-            #### Terraform Validation \`${{ steps.validate.outcome }}\`
-            #### Terraform Plan \`${{ steps.plan.outcome }}\`
-            <details><summary>Show Plan</summary>
-            \`\`\`
-
-            ${process.env.PLAN}
-            \`\`\`
-            </details>
-            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
-      - name: Read README.md content
-        id: readme_content
-        run: |
-          README=$(cat README.md)
-          echo "readme<<EOF" >> $GITHUB_OUTPUT
-          echo "$README" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Post README.md content to Pull Request
-        uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
-        env:
-          README_BODY: "${{ steps.readme_content.outputs.readme }}"
-        with:
-          github-token: ${{ secrets.GIT_TOKEN }}
-          script: |
-            const output = `#### Current README.md Content
-
-            <details><summary>Show README.md</summary>
-
-            \`\`\`markdown
-            ${process.env.README_BODY}
-            \`\`\`
-
-            </details>
-
-            *Posted by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
       - name: Upload Terraform Docs Artifact
         uses: actions/upload-artifact@v4.6.2
         with:
@@ -161,7 +87,7 @@ jobs:
           token: ${{ secrets.GIT_TOKEN }}
           body: |
             ## Terraform Docs ##
-            \`\`\`
+            ```
             ${{ steps.readme.outputs.content }}
 
       - name: Terraform test
@@ -179,8 +105,7 @@ jobs:
             echo "action=destroy" >> $GITHUB_OUTPUT
           else
             echo "action=none" >> $GITHUB_OUTPUT
-
-      - name: Terraform Init and Plan
+      - name: Terraform Init, Format, Validate, and Plan
         run: |
           terraform init
           terraform fmt -recursive
@@ -192,20 +117,21 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Login to Amazon ECR
-        id: login-ecr
+        if: ${{ steps.get_action.outputs.action == 'apply' }}
         uses: aws-actions/amazon-ecr-login@v2
-        
+
       - name: Build and Push appointment-service
-        if: steps.get_action.outputs.action == 'apply'
+        if: ${{ steps.get_action.outputs.action == 'apply' }}
         run: |
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-appointment:latest ./microservices/appointment-service
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-appointment:latest
 
       - name: Build and Push patient-service
-        if: steps.get_action.outputs.action == 'apply'
+        if: ${{ steps.get_action.outputs.action == 'apply' }}
         run: |
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-patient:latest ./microservices/patient-service
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-patient:latest
+
       - name: Terraform Destroy
         if: ${{ steps.get_action.outputs.action == 'destroy' }}
         run: terraform destroy -auto-approve

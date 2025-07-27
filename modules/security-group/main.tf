@@ -19,7 +19,7 @@ resource "aws_security_group" "alb_security_group" {
 }
 
 resource "aws_security_group" "security_group" {
-  name        = "uc8-sg"
+  name        = "uc10-sg"
   description = "Allow HTTP traffic only from ALB"
   vpc_id      = var.vpc_id
 

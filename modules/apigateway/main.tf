@@ -16,11 +16,11 @@ resource "aws_api_gateway_resource" "patients" {
 }
 
 resource "aws_api_gateway_authorizer" "cognito" {
-  name                   = "cognito-authorizer"
-  rest_api_id            = aws_api_gateway_rest_api.main.id
-  identity_source        = "method.request.header.Authorization"
-  type                   = "COGNITO_USER_POOLS"
-  provider_arns = [var.user_pool_arn]
+  name            = "cognito-authorizer"
+  rest_api_id     = aws_api_gateway_rest_api.main.id
+  identity_source = "method.request.header.Authorization"
+  type            = "COGNITO_USER_POOLS"
+  provider_arns   = [var.user_pool_arn]  # ✅ Passed as variable
 }
 
 resource "aws_api_gateway_method" "appointments_get" {
@@ -63,5 +63,10 @@ resource "aws_api_gateway_deployment" "main" {
     aws_api_gateway_integration.patients_integration
   ]
   rest_api_id = aws_api_gateway_rest_api.main.id
-  stage_name  = "prod"
+}
+
+resource "aws_api_gateway_stage" "prod" {
+  stage_name    = "prod"
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  deployment_id = aws_api_gateway_deployment.main.id
 }

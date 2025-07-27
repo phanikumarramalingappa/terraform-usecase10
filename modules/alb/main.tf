@@ -9,17 +9,17 @@ resource "aws_lb" "this" {
   }
 }
 
-# Target Groups (still use HTTP protocol for ECS tasks)
+# Target Groups
 resource "aws_lb_target_group" "patients" {
   name         = "${var.name}-tg-patients"
   port         = 3000
-  protocol     = "TCP"  # ✅ NLB only supports TCP/UDP
+  protocol     = "TCP"
   vpc_id       = var.vpc_id
   target_type  = "ip"
 
   health_check {
-    port                = "3000"
     protocol            = "TCP"
+    port                = "traffic-port"
     interval            = 30
     timeout             = 10
     healthy_threshold   = 2
@@ -30,13 +30,13 @@ resource "aws_lb_target_group" "patients" {
 resource "aws_lb_target_group" "appointments" {
   name         = "${var.name}-tg-appointments"
   port         = 3001
-  protocol     = "TCP"  # ✅ NLB only supports TCP/UDP
+  protocol     = "TCP"
   vpc_id       = var.vpc_id
   target_type  = "ip"
 
   health_check {
-    port                = "3001"
     protocol            = "TCP"
+    port                = "traffic-port"
     interval            = 30
     timeout             = 10
     healthy_threshold   = 2
@@ -44,7 +44,7 @@ resource "aws_lb_target_group" "appointments" {
   }
 }
 
-# Listener (NLB only supports TCP/UDP listeners)
+# Listeners
 resource "aws_lb_listener" "patients" {
   load_balancer_arn = aws_lb.this.arn
   port              = 3000

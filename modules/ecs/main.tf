@@ -50,8 +50,6 @@ resource "aws_ecs_service" "ecs" {
   }
 
   depends_on = [
-    aws_ecs_task_definition.ecs,
-    aws_lb_listener.patients,
-    aws_lb_listener.appointments
+    aws_ecs_task_definition.ecs
   ]
 }

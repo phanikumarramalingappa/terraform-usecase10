@@ -2,7 +2,7 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY patient-service.js .
+COPY appointment-service.js .
 
 RUN node -v
 
@@ -12,6 +12,6 @@ RUN npm init
 
 RUN npm install express
 
-EXPOSE 3000
+EXPOSE 3001
 
-CMD ["node", "patient-service.js"]
+CMD ["node", "appointment-service.js"]

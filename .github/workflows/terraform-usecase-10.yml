@@ -15,7 +15,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  terraform-usecase-10:
+  terraform-usecase10:
     runs-on: ubuntu-latest
     steps:
       - name: Code checkout

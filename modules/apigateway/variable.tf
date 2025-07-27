@@ -12,3 +12,8 @@ variable "user_pool_id" {
   type        = string
   description = "ID of the Cognito User Pool"
 }
+
+variable "user_pool_arn" {
+  description = "ARN of the Cognito User Pool"
+  type        = string
+}

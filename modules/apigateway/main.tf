@@ -20,7 +20,7 @@ resource "aws_api_gateway_authorizer" "cognito" {
   rest_api_id     = aws_api_gateway_rest_api.main.id
   identity_source = "method.request.header.Authorization"
   type            = "COGNITO_USER_POOLS"
-  provider_arns   = [var.user_pool_arn]  # ✅ Passed as variable
+  provider_arns   = [var.user_pool_arn]
 }
 
 resource "aws_api_gateway_method" "appointments_get" {
@@ -39,13 +39,20 @@ resource "aws_api_gateway_method" "patients_get" {
   authorizer_id = aws_api_gateway_authorizer.cognito.id
 }
 
+resource "aws_api_gateway_vpc_link" "internal_alb_link" {
+  name        = "internal-alb-vpc-link"
+  target_arns = [var.internal_alb_arn]
+}
+
 resource "aws_api_gateway_integration" "appointments_integration" {
   rest_api_id             = aws_api_gateway_rest_api.main.id
   resource_id             = aws_api_gateway_resource.appointments.id
   http_method             = aws_api_gateway_method.appointments_get.http_method
   integration_http_method = "GET"
-  type                    = "HTTP"
-  uri                     = "http://${var.alb_dns_name}/appointments"
+  type                    = "HTTP_PROXY"
+  uri                     = "http://${var.internal_alb_dns}/appointments"
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.internal_alb_link.id
 }
 
 resource "aws_api_gateway_integration" "patients_integration" {
@@ -53,8 +60,10 @@ resource "aws_api_gateway_integration" "patients_integration" {
   resource_id             = aws_api_gateway_resource.patients.id
   http_method             = aws_api_gateway_method.patients_get.http_method
   integration_http_method = "GET"
-  type                    = "HTTP"
-  uri                     = "http://${var.alb_dns_name}/patients"
+  type                    = "HTTP_PROXY"
+  uri                     = "http://${var.internal_alb_dns}/patients"
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.internal_alb_link.id
 }
 
 resource "aws_api_gateway_deployment" "main" {

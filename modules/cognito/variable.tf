@@ -8,7 +8,7 @@ variable "app_client_name" {
   description = "Name of the Cognito App Client"
 }
 
-variable "domain_prefix" {
+variable "cognito_domain_prefix" {
   type        = string
   description = "Prefix for Cognito hosted domain"
 }

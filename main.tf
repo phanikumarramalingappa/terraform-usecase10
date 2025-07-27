@@ -60,7 +60,7 @@ module "cognito" {
 }
 
 module "api_gateway" {
-  source = "./modules/api-gateway"
+  source = "./modules/apigateway"
   alb_dns_name = module.alb.alb_dns_name
   cognito_user_pool_id = module.cognito.user_pool_id
 }

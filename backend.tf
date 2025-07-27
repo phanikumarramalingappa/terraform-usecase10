@@ -3,6 +3,6 @@ terraform {
     bucket       = "terraform-usecases-nsh-batch-6"
     key          = "usecase10/terraform.tfstate"
     region       = "us-east-1"
-    use_lockfile = true
+    #use_lockfile = true
   }
 }

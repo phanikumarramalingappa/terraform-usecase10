@@ -40,7 +40,7 @@ cluster = aws_ecs_cluster.ecs.id
   network_configuration {
     subnets          = var.subnets
     security_groups  = var.security_groups
-    assign_public_ip = true
+    assign_public_ip = false
   }
  
   load_balancer {

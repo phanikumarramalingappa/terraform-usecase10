@@ -1,4 +1,4 @@
-name: terraform-usecase10
+name: terraform-usecase-10
 
 on:
   push:

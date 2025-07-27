@@ -8,3 +8,4 @@ private_subnets = ["10.0.3.0/24", "10.0.4.0/24"]
 azs = ["us-east-1a", "us-east-1b"]
 cluster_name = "ecs-microservice-cluster"
 execution_role_arn = "arn:aws:iam::911891700576:role/ecsTaskExecutionRole"
+cognito_domain_prefix = "appointment-patient-auth"

@@ -12,6 +12,7 @@ on:
 permissions:
   id-token: write
   contents: write
+  pull-requests: write
 
 jobs:
   terraform-usecase-10:
@@ -59,18 +60,21 @@ jobs:
           sudo mv terraform-docs /usr/local/bin/
 
       - name: Generate Terraform Docs and Commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: |
-          git config --local user.email ${{ secrets.EMAIL }}
-          git config --local user.name ${{ secrets.user }}
           terraform-docs markdown table . > README.md.new
           mv README.md.new README.md
           if [ -f README.md ]; then
+            git config --global user.email "${{ secrets.EMAIL }}"
+            git config --global user.name "${{ secrets.user }}"
             git add README.md
-            if git commit -m "docs: Update README.md"; then
-              git push
-              echo "Successfully committed and pushed README.md changes."
-            else
+            if git diff --cached --quiet; then
               echo "No README.md changes to commit."
+            else
+              git commit -m "docs: Update README.md"
+              git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
+              echo "Successfully committed and pushed README.md changes."
             fi
           else
             echo "README.md was not generated."
@@ -80,15 +84,6 @@ jobs:
         with:
           name: terraform-docs
           path: usecase-8/README.md
-
-      - name: Add README.md to PR
-        uses: peter-evans/create-pull-request@v7.0.8
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
-          body: |
-            ## Terraform Docs ##
-            ```
-            ${{ steps.readme.outputs.content }}
 
       - name: Terraform test
         run: |
@@ -105,6 +100,7 @@ jobs:
             echo "action=destroy" >> $GITHUB_OUTPUT
           else
             echo "action=none" >> $GITHUB_OUTPUT
+
       - name: Terraform Init, Format, Validate, and Plan
         run: |
           terraform init

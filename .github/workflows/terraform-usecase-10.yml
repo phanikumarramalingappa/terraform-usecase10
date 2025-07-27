@@ -41,6 +41,7 @@ jobs:
           else
             echo "action=none" >> $GITHUB_OUTPUT
 
+
       - name: Debug Action Output
         run: echo "Action is ${{ steps.get_action.outputs.action }}"
 

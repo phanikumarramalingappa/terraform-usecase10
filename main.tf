@@ -41,14 +41,14 @@ module "ecs_cluster" {
       image             = module.ecr.repositories["node-appointment"]
       cpu               = 256
       memory            = 512
-      container_port    = 80
+      container_port    = 3001
       target_group_arn  = module.alb.appointments_tg_arn
     }
     patients = {
       image             = module.ecr.repositories["node-patient"]
       cpu               = 256
       memory            = 512
-      container_port    = 80
+      container_port    = 3000
       target_group_arn  = module.alb.patients_tg_arn
     }
   }

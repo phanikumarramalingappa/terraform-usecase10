@@ -2,9 +2,6 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files first to leverage Docker layer caching
-COPY package*.json .  
-
 # Install dependencies
 RUN npm install
 

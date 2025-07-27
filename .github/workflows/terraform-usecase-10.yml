@@ -30,8 +30,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: ${{ secrets.OIDC_ROLE }}
 
-      - name: Extract action from commit message
-        id: get_action
+      - name: Determine Terraform Action
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B)
           if [[ "$COMMIT_MSG" == *"terraform:apply"* ]]; then
@@ -40,7 +39,7 @@ jobs:
             echo "action=destroy" >> $GITHUB_OUTPUT
           else
             echo "action=none" >> $GITHUB_OUTPUT
-
+          fi
 
       - name: Debug Action Output
         run: echo "Action is ${{ steps.get_action.outputs.action }}"

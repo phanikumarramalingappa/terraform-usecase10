@@ -52,13 +52,3 @@ variable "cognito_domain_prefix" {
   type        = string
   description = "Prefix for Cognito hosted domain"
 }
-
-variable "alb_dns_name" {
-  type        = string
-  description = "DNS name of the Application Load Balancer"
-}
-
-variable "user_pool_id" {
-  type        = string
-  description = "ID of the Cognito User Pool"
-}

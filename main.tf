@@ -56,6 +56,9 @@ module "ecs_cluster" {
 
 module "cognito" {
   source = "./modules/cognito"
+  user_pool_name        = "my-user-pool"
+  app_client_name       = "my-app-client"
+  cognito_domain_prefix = var.cognito_domain_prefix
   domain_prefix = var.cognito_domain_prefix
 }
 

@@ -1,7 +1,5 @@
 name: terraform-usecase-10
 
-# on:
-#   workflow_dispatch:
 on:
   push:
     paths:
@@ -32,64 +30,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: ${{ secrets.OIDC_ROLE }}
 
-      # - name: Setup Python for Checkov
-      #   uses: actions/setup-python@v5.6.0
-
-      # - name: Install Checkov
-      #   run: pip install checkov
-
-      # - name: Run Checkov Scan
-      #   run: checkov -d . --framework terraform --soft-fail --output json > checkov_result.json
-
-      # - name: Upload Checkov Artifact
-      #   uses: actions/upload-artifact@v4.6.2
-      #   with:
-      #     name: checkov-info
-      #     path: checkov_result.json
-
-      # - name: Setup Node.js
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '18'
-
-      # - name: Install terraform-docs
-      #   run: |
-      #     curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v0.16.0/terraform-docs-v0.16.0-$(uname)-amd64.tar.gz
-      #     tar -xzf terraform-docs.tar.gz
-      #     chmod +x terraform-docs
-      #     sudo mv terraform-docs /usr/local/bin/
-
-      # - name: Generate Terraform Docs and Commit
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-      #   run: |
-      #     terraform-docs markdown table . > README.md.new
-      #     mv README.md.new README.md
-      #     if [ -f README.md ]; then
-      #       git config --global user.email "${{ secrets.EMAIL }}"
-      #       git config --global user.name "${{ secrets.user }}"
-      #       git add README.md
-      #       if git diff --cached --quiet; then
-      #         echo "No README.md changes to commit."
-      #       else
-      #         git commit -m "docs: Update README.md"
-      #         git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
-      #         echo "Successfully committed and pushed README.md changes."
-      #       fi
-      #     else
-      #       echo "README.md was not generated."
-
-      # - name: Upload Terraform Docs Artifact
-      #   uses: actions/upload-artifact@v4.6.2
-      #   with:
-      #     name: terraform-docs
-      #     path: usecase-8/README.md
-
-      # - name: Terraform test
-      #   run: |
-      #     terraform init
-      #     terraform test
-
       - name: Extract action from commit message
         id: get_action
         run: |
@@ -101,16 +41,21 @@ jobs:
           else
             echo "action=none" >> $GITHUB_OUTPUT
 
-      - name: Terraform Init, Format, Validate, and Plan
+      - name: Debug Action Output
+        run: echo "Action is ${{ steps.get_action.outputs.action }}"
+
+      - name: Terraform Init, Format, Validate
         run: |
           terraform init
           terraform fmt -recursive
           terraform validate
-          terraform plan -var-file=terraform.tfvars
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=terraform.tfvars -out=tfplan
 
       - name: Terraform Apply
         if: ${{ steps.get_action.outputs.action == 'apply' }}
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan
 
       - name: Login to Amazon ECR
         if: ${{ steps.get_action.outputs.action == 'apply' }}

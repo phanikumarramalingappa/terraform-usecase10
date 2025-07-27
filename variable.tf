@@ -58,7 +58,7 @@ variable "alb_dns_name" {
   description = "DNS name of the Application Load Balancer"
 }
 
-variable "cognito_user_pool_id" {
+variable "user_pool_id" {
   type        = string
   description = "ID of the Cognito User Pool"
 }

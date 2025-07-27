@@ -2,7 +2,7 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY appointment-service.js .
+COPY patient-service.js .
 
 RUN node -v
 

@@ -50,7 +50,7 @@ resource "aws_api_gateway_integration" "appointments_integration" {
   http_method             = aws_api_gateway_method.appointments_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
-  uri                     = "http://${var.internal_alb_dns}/appointments"
+  uri                     = "http://${var.alb_dns_name}/appointments"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.internal_alb_link.id
 }
@@ -61,7 +61,7 @@ resource "aws_api_gateway_integration" "patients_integration" {
   http_method             = aws_api_gateway_method.patients_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
-  uri                     = "http://${var.internal_alb_dns}/patients"
+  uri                     = "http://${var.alb_dns_name}/patients"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.internal_alb_link.id
 }

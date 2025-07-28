@@ -1,13 +1,13 @@
 name: terraform-usecase10
 
-# on:
-#   workflow_dispatch:
 on:
-  push:
-    paths:
-      - '**'
-      - '.github/workflows/terraform-usecase-10.yaml'
-    branches: [main]
+  workflow_dispatch:
+# on:
+#   push:
+#     paths:
+#       - '**'
+#       - '.github/workflows/terraform-usecase-10.yaml'
+#     branches: [main]
 
 permissions:
   id-token: write

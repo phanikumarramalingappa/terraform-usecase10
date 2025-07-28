@@ -8,6 +8,11 @@ variable "alb_sg_name" {
   description = "ALB Sg name"
 }
 
+variable "nlb_sg_name" {
+  type = string
+  description = "NLB Sg name"
+}
+
 variable "sg_name" {
   type = string
   description = "ECS fargate SG name"

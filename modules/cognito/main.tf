@@ -1,5 +1,5 @@
 resource "aws_cognito_user_pool" "main" {
-  name = "appointment-patient-user-pool"
+  name = var.user_pool_name
 
   auto_verified_attributes = ["email"]
 
@@ -17,8 +17,8 @@ resource "aws_cognito_user_pool" "main" {
 }
 
 resource "aws_cognito_user_pool_client" "main" {
-  name         = "appointment-patient-app-client"
-  user_pool_id = aws_cognito_user_pool.main.id
+  name            = var.app_client_name
+  user_pool_id    = aws_cognito_user_pool.main.id
   generate_secret = false
 
   explicit_auth_flows = [
@@ -29,6 +29,6 @@ resource "aws_cognito_user_pool_client" "main" {
 }
 
 resource "aws_cognito_user_pool_domain" "main" {
-  domain       = "appointment-patient-auth"
+  domain       = var.cognito_domain_prefix
   user_pool_id = aws_cognito_user_pool.main.id
 }

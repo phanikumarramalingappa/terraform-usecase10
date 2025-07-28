@@ -7,7 +7,10 @@ variable "alb_sg_name" {
   type        = string
   description = "Security group name for ALB"
 }
-
+variable "nlb_sg_name" {
+  type        = string
+  description = "Security group name for NLB"
+}
 variable "sg_name" {
   type        = string
   description = "Security group name for ECS tasks"

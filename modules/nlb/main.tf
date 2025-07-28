@@ -1,70 +1,46 @@
-resource "aws_lb" "this" {
+resource "aws_lb" "nlb" {
   name               = var.name
   internal           = true
   load_balancer_type = "network"
+  security_groups    = [var.nlb_sg_id]
   subnets            = var.private_subnets
-
-  tags = {
-    Name = var.name
-  }
 }
 
-# Target Groups
-resource "aws_lb_target_group" "patients" {
-  name         = "${var.name}-tg-patients"
-  port         = 3000
-  protocol     = "TCP"
-  vpc_id       = var.vpc_id
-  target_type  = "ip"
+resource "aws_lb_target_group" "nlb_tg" {
+  name        = var.target_group_name
+  port        = 80
+  protocol    = "TCP"
+  vpc_id      = var.vpc_id
+  target_type = "alb"
 
   health_check {
-    protocol            = "TCP"
-    port                = "traffic-port"
-    interval            = 30
-    timeout             = 10
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    # matcher removed because it's invalid for TCP
+    protocol = "HTTP"
+    path     = "/alb"
+    port     = "traffic-port"
   }
 }
 
-resource "aws_lb_target_group" "appointments" {
-  name         = "${var.name}-tg-appointments"
-  port         = 3001
-  protocol     = "TCP"
-  vpc_id       = var.vpc_id
-  target_type  = "ip"
 
-  health_check {
-    protocol            = "TCP"
-    port                = "traffic-port"
-    interval            = 30
-    timeout             = 10
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    # matcher removed because it's invalid for TCP
-  }
+resource "aws_lb_target_group_attachment" "tg_attachment" {
+  target_group_arn = aws_lb_target_group.nlb_tg.arn
+  target_id        = var.alb_id
+  port             = 80             
 }
 
-# Listeners
-resource "aws_lb_listener" "patients" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = 3000
+
+resource "aws_lb_listener" "nlb_listener" {
+  load_balancer_arn = aws_lb.nlb.arn
+  port              = 80
   protocol          = "TCP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.patients.arn
+    target_group_arn = aws_lb_target_group.nlb_tg.arn
   }
 }
 
-resource "aws_lb_listener" "appointments" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = 3001
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.appointments.arn
-  }
+resource "aws_api_gateway_vpc_link" "example" {
+  name        = "uc10-vpc-link"
+  description = "VPC link for API gateway"
+  target_arns = [aws_lb.nlb.arn]
 }

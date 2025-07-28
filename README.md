@@ -32,6 +32,7 @@ No resources.
 | <a name="input_cognito_domain_prefix"></a> [cognito\_domain\_prefix](#input\_cognito\_domain\_prefix) | Prefix for Cognito hosted domain | `string` | n/a | yes |
 | <a name="input_ecr_repo_name"></a> [ecr\_repo\_name](#input\_ecr\_repo\_name) | ECR Repo name list | `list(string)` | n/a | yes |
 | <a name="input_execution_role_arn"></a> [execution\_role\_arn](#input\_execution\_role\_arn) | IAM role ARN for ECS task execution | `string` | n/a | yes |
+| <a name="input_nlb_sg_name"></a> [nlb\_sg\_name](#input\_nlb\_sg\_name) | Security group name for NLB | `string` | n/a | yes |
 | <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | List of private subnet CIDRs | `list(string)` | n/a | yes |
 | <a name="input_public_subnets"></a> [public\_subnets](#input\_public\_subnets) | List of public subnet CIDRs | `list(string)` | n/a | yes |
 | <a name="input_sg_name"></a> [sg\_name](#input\_sg\_name) | Security group name for ECS tasks | `string` | n/a | yes |

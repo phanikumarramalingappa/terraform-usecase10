@@ -26,6 +26,9 @@ resource "aws_cognito_user_pool_client" "main" {
     "ALLOW_REFRESH_TOKEN_AUTH",
     "ALLOW_USER_SRP_AUTH"
   ]
+  allowed_oauth_flows       = ["code"]
+  allowed_oauth_scopes      = ["email", "openid", "profile"]
+  supported_identity_providers = ["COGNITO"]
 }
 
 resource "aws_cognito_user_pool_domain" "main" {

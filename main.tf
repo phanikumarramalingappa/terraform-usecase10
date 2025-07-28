@@ -22,7 +22,7 @@ module "sg" {
 }
 
 module "nlb" {
-  source         = "./modules/alb"
+  source         = "./modules/nlb"
   name           = "mc-nlb"
   vpc_id         = module.vpc.vpc_id
   private_subnets = module.vpc.private_subnet_ids

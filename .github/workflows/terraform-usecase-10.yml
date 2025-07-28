@@ -1,4 +1,4 @@
-name: terraform-usecase10
+name: terraformusecase10
 
 on:
   workflow_dispatch:

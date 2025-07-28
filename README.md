@@ -15,7 +15,7 @@ No providers.
 | <a name="module_cognito"></a> [cognito](#module\_cognito) | ./modules/cognito | n/a |
 | <a name="module_ecr"></a> [ecr](#module\_ecr) | ./modules/ecr | n/a |
 | <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | ./modules/ecs | n/a |
-| <a name="module_nlb"></a> [nlb](#module\_nlb) | ./modules/alb | n/a |
+| <a name="module_nlb"></a> [nlb](#module\_nlb) | ./modules/nlb | n/a |
 | <a name="module_sg"></a> [sg](#module\_sg) | ./modules/security-group | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/vpc | n/a |
 

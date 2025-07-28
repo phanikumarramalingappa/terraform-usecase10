@@ -26,9 +26,12 @@ resource "aws_cognito_user_pool_client" "main" {
     "ALLOW_REFRESH_TOKEN_AUTH",
     "ALLOW_USER_SRP_AUTH"
   ]
-  allowed_oauth_flows       = ["code"]
-  allowed_oauth_scopes      = ["email", "openid", "profile"]
-  supported_identity_providers = ["COGNITO"]
+
+  allowed_oauth_flows             = ["code"]
+  allowed_oauth_scopes            = ["email", "openid", "profile"]
+  supported_identity_providers    = ["COGNITO"]
+  callback_urls                   = ["https://yourapp.com/callback"]
+  logout_urls                     = ["https://yourapp.com/logout"]
 }
 
 resource "aws_cognito_user_pool_domain" "main" {

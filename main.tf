@@ -21,6 +21,13 @@ module "sg" {
   sg_name     = var.sg_name
 }
 
+module "nlb" {
+  source         = "./modules/alb"
+  name           = "mc-nlb"
+  vpc_id         = module.vpc.vpc_id
+  private_subnets = module.vpc.private_subnet_ids
+  nlb_sg_id      = module.sg.nlb_sg_id
+}
 module "alb" {
   source         = "./modules/alb"
   name           = "mc-alb"

@@ -13,7 +13,7 @@ variable "private_subnets" {
   description = "List of private subnet IDs for internal ALB"
 }
 
-variable "alb_sg_id" {
+variable "nlb_sg_id" {
   description = "Security group ID for the ALB"
   type        = string
 }

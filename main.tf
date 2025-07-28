@@ -17,6 +17,7 @@ module "sg" {
   source     = "./modules/security-group"
   vpc_id     = module.vpc.vpc_id
   alb_sg_name = var.alb_sg_name
+  nlb_sg_name = var.nlb_sg_name
   sg_name     = var.sg_name
 }
 

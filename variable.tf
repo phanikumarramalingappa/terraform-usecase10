@@ -5,7 +5,7 @@ variable "ecr_repo_name" {
 
 variable "alb_sg_name" {
   type        = string
-  description = "Security group name for ALB"
+  description = "security group name for ALB"
 }
 variable "nlb_sg_name" {
   type        = string
